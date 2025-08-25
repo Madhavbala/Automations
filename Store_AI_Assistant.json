@@ -1,0 +1,605 @@
+{
+  "name": "WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        464,
+        0
+      ],
+      "id": "97dd1734-b8e4-4527-bdbb-61b4f39e3000",
+      "name": "WhatsApp Trigger",
+      "webhookId": "5836d0cb-ebdc-49ed-ac02-e68641a8b91c",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "YgY461Zv3yJAJNqg",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "52c2b62f-0713-4828-bb9a-67ec1b405135",
+      "name": "AI Agent",
+      "alwaysOutputData": false,
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        576,
+        272
+      ],
+      "id": "9df5132b-6e2f-4b09-9460-1c4c09f77a09",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        688,
+        272
+      ],
+      "id": "aab031d9-f171-458d-9dc8-2d0a4df032e4",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "806838795840648",
+        "recipientPhoneNumber": "+919042103930",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "bdf4f8c9-1d1d-404d-860f-ac7d829329b8",
+      "name": "Send message",
+      "webhookId": "6b8bd36e-53d0-4e2c-a974-d4587eb839cf",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "kFMbQRdJfqGiF4hD",
+          "name": "WhatsApp account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "You are an AI assistant for a small grocery shop in Tamil Nadu. \nYou are provided with a dataset called \"Liquid\" which contains details of liquid grocery products. \nThe dataset has the following columns:\n\n- Product ID\n- Product Name\n- Category\n- Brand\n- Unit (Litre)\n- Price per Litre (₹)\n- Stock Qty (Litre)\n- Supplier Name\n\nYour tasks:\n1. Summarize the stock situation (which items are high/low in stock).\n2. Identify the most expensive and cheapest liquid products.\n3. Compare product categories (like Dairy vs Beverages vs Oils).\n4. Suggest which products should be reordered soon.\n5. Calculate total stock value (Price × Stock).\n6. Highlight top-selling brands to focus on.\n7. Answer any business-related queries about liquid items.\n\nAlways respond in a simple, shop-owner-friendly way. \nIf calculations are required, show step-by-step logic clearly. \nGive practical insights for running a small retail grocery shop in Tamil Nadu.\n",
+        "documentId": {
+          "__rl": true,
+          "value": "1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4",
+          "mode": "list",
+          "cachedResultName": "updated_indian_grocery_store",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 580223820,
+          "mode": "list",
+          "cachedResultName": "Liquid",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4/edit#gid=580223820"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        928,
+        272
+      ],
+      "id": "7fe6d18a-1406-4b66-b5dc-70e97cfce944",
+      "name": "Liquid",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "L9FBglaEFj8RpZbx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "You are an AI assistant for a small grocery shop in Tamil Nadu. \nYou are provided with a dataset called \"Solid\" which contains details of solid grocery products. \nThe dataset has the following columns:\n\n- Product ID\n- Product Name\n- Category\n- Brand\n- Unit (Kg)\n- Price per Kg (₹)\n- Stock Qty (Kg)\n- Supplier Name\n\nYour tasks:\n1. Summarize the stock situation (which solid items are high/low in stock).\n2. Identify the most expensive and cheapest solid products.\n3. Compare product categories (Rice vs Pulses vs Flour vs Spices vs Essentials).\n4. Suggest which products should be reordered soon.\n5. Calculate total stock value (Price × Stock).\n6. Highlight top-selling brands or suppliers to focus on.\n7. Answer any business-related queries about solid grocery items.\n\nAlways respond in a simple, shop-owner-friendly way. \nIf calculations are required, show step-by-step logic clearly. \nGive practical insights for running a small retail grocery shop in Tamil Nadu.\n",
+        "documentId": {
+          "__rl": true,
+          "value": "1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4",
+          "mode": "list",
+          "cachedResultName": "updated_indian_grocery_store",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1765738760,
+          "mode": "list",
+          "cachedResultName": "Solid",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4/edit#gid=1765738760"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        272
+      ],
+      "id": "187ae3fd-a8ab-474d-a699-c65afa744c40",
+      "name": "Solid",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "L9FBglaEFj8RpZbx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4",
+          "mode": "list",
+          "cachedResultName": "updated_indian_grocery_store",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1953529830,
+          "mode": "list",
+          "cachedResultName": "Sales",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4/edit#gid=1953529830"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "Product Name"
+          ],
+          "schema": [
+            {
+              "id": "Sale ID",
+              "displayName": "Sale ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Product ID",
+              "displayName": "Product ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product Name",
+              "displayName": "Product Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Quantity Sold",
+              "displayName": "Quantity Sold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Unit Price (₹)",
+              "displayName": "Unit Price (₹)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total Amount (₹)",
+              "displayName": "Total Amount (₹)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Payment Mode",
+              "displayName": "Payment Mode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        816,
+        448
+      ],
+      "id": "2f42584f-58fb-4bc0-b8e0-2839666b1f40",
+      "name": "Sales",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "L9FBglaEFj8RpZbx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4",
+          "mode": "list",
+          "cachedResultName": "updated_indian_grocery_store",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 514624214,
+          "mode": "list",
+          "cachedResultName": "Updated_Products",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1a3zX5xlJBqmgBkSHZkVjb5HLtgvOKPo2cP8laOK9wb4/edit#gid=514624214"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "Product Name"
+          ],
+          "schema": [
+            {
+              "id": "Product ID",
+              "displayName": "Product ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product Name",
+              "displayName": "Product Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Brand",
+              "displayName": "Brand",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Unit",
+              "displayName": "Unit",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Price per Unit (₹)",
+              "displayName": "Price per Unit (₹)",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Opening Stock",
+              "displayName": "Opening Stock",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Quantity Sold",
+              "displayName": "Quantity Sold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Closing Stock",
+              "displayName": "Closing Stock",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Supplier Name",
+              "displayName": "Supplier Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Expiry Date",
+              "displayName": "Expiry Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        928,
+        448
+      ],
+      "id": "dab474d7-8d00-4fd0-9586-38eaace81b8b",
+      "name": "Updated_sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "L9FBglaEFj8RpZbx",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "You are a Grocery Store Inventory Assistant. \n\nTask:\n- You have access to the \"Solid\" and \"Liquid\" Google Sheets.\n- Always answer user questions **based on the actual data in these sheets**.\n- Answer concisely and clearly for WhatsApp messages.\n- Do not give general tool descriptions or instructions.\n- Use stock, product names, categories, and quantities from the sheets to answer.\n- Examples:\n   * User: \"How many types of products do I have in Liquid?\"\n     Response: \"You have 10 Liquid products: Sunflower Oil, Groundnut Oil, Coconut Oil, Milk, Curd, Orange Juice, Mango Juice, Soda, Cola Drink, Rose Milk.\"\n   * User: \"What is the total stock of Toor Dal?\"\n     Response: \"Total stock of Toor Dal is 75 kg.\"\n- If user asks about unavailable products, respond politely: \"Product not found in the dataset.\"\n\nConstraints:\n- Keep answers short and human-friendly.\n- Always include **exact product names, quantities, or values** from the sheets.\n- Do not repeat tool descriptions or generic instructions.\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        352
+      ],
+      "id": "b8451bb3-ac90-4941-ae1a-e3feb412bdb6",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        448,
+        272
+      ],
+      "id": "7db69a4f-9c2f-4523-b77c-29a63b43c9a8",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "RCDbwzbHj5I8pyjp",
+          "name": "Groq account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Liquid": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Solid": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Updated_sheet": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0483cfc9-71e6-45b2-b9c1-40afb36b6b3a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6d542aa3360ba222b14f427bb723fd8f3f5e678b0a0bf268d5e2136ea52c517a"
+  },
+  "id": "WL4zK3iIqQ8YtXJp",
+  "tags": []
+}
