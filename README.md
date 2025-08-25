@@ -2,8 +2,6 @@ This workflow allows a small grocery store owner to track sales, update inventor
 
 Key Features:
 
-Record daily sales automatically.
-
 Update inventory (Updated_Products) after each sale.
 
 Track expiry dates for all products.
